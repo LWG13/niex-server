@@ -9,7 +9,7 @@ const connect = require("./connect.cjs");
 const cors = require("cors");
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 phút
-  max: 100, // tối đa 100 request / IP
+  max: 200, // tối đa 100 request / IP
 });
 app.use(limiter);
 app.use(cors());
