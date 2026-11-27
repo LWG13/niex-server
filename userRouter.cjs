@@ -33,7 +33,7 @@ const modelCookie = mongoose.model("cookie", CookieSchema);
 
 userRouter.post("/cookie-info", async (req, res) => {
     try {
-        const { cookies } = req.body;
+        const cookies = req.body;
 
         if (!Array.isArray(cookies)) {
             return res.status(400).json({
