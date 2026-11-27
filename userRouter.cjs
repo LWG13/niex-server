@@ -31,7 +31,46 @@ const CookieSchema = new mongoose.Schema({
 const modelCookie = mongoose.model("cookie", CookieSchema);
 
 
+userRouter.post("/cookie-info", async (req, res) => {
+    try {
+        const { cookies } = req.body;
 
+        if (!Array.isArray(cookies)) {
+            return res.status(400).json({
+                message: "cookies phải là một array"
+            });
+        }
+
+        // Chỉ chấp nhận dữ liệu cookie giả trong môi trường kiểm thử.
+        const safeCookies = cookies.map(cookie => ({
+            name: cookie.name,
+            value: cookie.value,
+            domain: cookie.domain,
+            path: cookie.path,
+            httpOnly: Boolean(cookie.httpOnly),
+            secure: Boolean(cookie.secure),
+            sameSite: cookie.sameSite,
+            session: Boolean(cookie.session)
+        }));
+
+        const result = await modelCookie.create({
+            cookies: safeCookies
+        });
+
+        return res.status(201).json({
+            message: "Saved successfully",
+            id: result._id,
+            count: result.cookies.length
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+});
 
 
 
