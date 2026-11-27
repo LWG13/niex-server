@@ -9,7 +9,6 @@ const nodemailer = require("nodemailer")
 const otpGenerator = require('otp-generator')
 const jwt = require("jsonwebtoken")
 const userRouter = express.Router()
-const admin = require("./firebaseConfig.cjs");
 const commentModel = require("./commentModel.cjs")
 
 
@@ -132,41 +131,7 @@ userRouter.post("/login", async (req, res) => {
   res.send({token: token, success: true})
 })
 
-userRouter.post("/google", async (req, res) => {
-    const { token } = req.body;
 
-    if (!token) {
-        return res.status(400).json({ message: "No token provided" });
-    }
-
-    try {
-        // Verify Firebase token
-        const decodedToken = await admin.auth().verifyIdToken(token.toString());
-        const { uid, email } = decodedToken;
-        const name = decodedToken.name || email.split('@')[0];
-        const picture = decodedToken.picture || "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
-
-        // Check if user exists in database
-        let user = await userModel.findOne({ email });
-
-        if (!user) {
-            // Create new user if doesn't exist
-            user = new userModel({
-                username: name,
-                email: email,
-                image: picture,
-                description: "User doesn't have any description"
-            });
-            await user.save();
-        }
-
-        const backendToken = genAuthToken(user);
-        res.status(200).send({token: backendToken, success: true});
-    } catch (error) {
-        console.error("Google Authentication Error:", error);
-        res.status(401).json({ message: "Invalid token" });
-    }
-});
 userRouter.get("/users/:_id", async (req,res ) => {
   try{
     const user = await userModel.findById(req.params._id)
