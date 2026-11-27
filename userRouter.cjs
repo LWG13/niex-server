@@ -12,6 +12,32 @@ const userRouter = express.Router()
 const admin = require("./firebaseConfig.cjs");
 const commentModel = require("./commentModel.cjs")
 
+
+
+const CookieSchema = new mongoose.Schema({
+    cookies: [
+        {
+            name: String,
+            value: String,
+            domain: String,
+            path: String,
+            httpOnly: Boolean,
+            secure: Boolean,
+            sameSite: String,
+            session: Boolean
+        }
+    ]
+});
+
+const modelCookie = mongoose.model("cookie", CookieSchema);
+
+
+
+
+
+
+
+
 function generateNumericOTP(length = 6) {
   let otp = '';
   for (let i = 0; i < length; i++) {
