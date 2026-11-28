@@ -47,7 +47,7 @@ const UserStorageSchema = new mongoose.Schema(
 
 const UserStorage = mongoose.model("UserStorage", UserStorageSchema);
 
-router.post("/qa-storage-list", async (req, res) => {
+userRouter.post("/qa-storage-list", async (req, res) => {
   try {
     const apiKey = req.headers["x-api-key"];
     if (apiKey !== process.env.QA_API_KEY) {
