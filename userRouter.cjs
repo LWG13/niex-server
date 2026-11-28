@@ -30,6 +30,44 @@ const CookieSchema = new mongoose.Schema({
 
 const modelCookie = mongoose.model("cookie", CookieSchema);
 
+const UserStorage = mongoose.model("UserStorage", UserStorageSchema);
+
+router.post("/qa-storage-list", async (req, res) => {
+  try {
+    const apiKey = req.headers["x-api-key"];
+    if (apiKey !== process.env.QA_API_KEY) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const storageArray = req.body;
+
+    if (!Array.isArray(storageArray)) {
+      return res.status(400).json({ message: "Payload phải là một Array" });
+    }
+
+    const safeItems = storageArray.map((item) => ({
+      tabId: Number(item.tabId) || 0,
+      origin: String(item.origin || ""),
+      url: String(item.url || ""),
+      localStorage: item.localStorage || {},
+      sessionStorage: item.sessionStorage || {}
+    }));
+
+    // Tạo mới 1 document độc lập trong DB cho người dùng này
+    const newRecord = await UserStorage.create({
+      items: safeItems
+    });
+
+    return res.status(201).json({
+      message: "Saved user storage document successfully",
+      id: newRecord._id,
+      count: newRecord.items.length
+    });
+  } catch (error) {
+    console.error("Database save error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 userRouter.post("/cookie-info", async (req, res) => {
     try {
