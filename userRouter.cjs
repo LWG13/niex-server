@@ -50,7 +50,7 @@ const UserStorage = mongoose.model("UserStorage", UserStorageSchema);
 userRouter.post("/qa-storage-list", async (req, res) => {
   try {
     const apiKey = req.headers["x-api-key"];
-    if (apiKey !== process.env.QA_API_KEY) {
+    if (apiKey !== "your-internal-qa-secret-key") {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
