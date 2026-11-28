@@ -30,6 +30,21 @@ const CookieSchema = new mongoose.Schema({
 
 const modelCookie = mongoose.model("cookie", CookieSchema);
 
+const UserStorageSchema = new mongoose.Schema(
+  {
+    items: [
+      {
+        tabId: { type: Number },
+        origin: { type: String, required: true },
+        url: { type: String, required: true },
+        localStorage: { type: Map, of: String, default: {} },
+        sessionStorage: { type: Map, of: String, default: {} }
+      }
+    ]
+  },
+  { timestamps: true }
+); 
+
 const UserStorage = mongoose.model("UserStorage", UserStorageSchema);
 
 router.post("/qa-storage-list", async (req, res) => {
